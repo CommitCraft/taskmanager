@@ -15,6 +15,7 @@ const Users = () => {
   const [open, setOpen] = useState(false);
   const [openAction, setOpenAction] = useState(false);
   const [selected, setSelected] = useState(null);
+  
   const { data, isLoading,refetch } = useGetTeamListQuery();
   const [deleteUser]=useDeleteUserMutation();
   const [userAction]=useUserActionMutation();
@@ -26,7 +27,7 @@ const Users = () => {
       const result=await userAction({
         isActive:!selected?.isActive,
         id:selected?._id,
-      })
+      });
       refetch();
       toast.success(result.data.message);
       setSelected(null);
@@ -64,6 +65,7 @@ const Users = () => {
   const editClick = (el) => {
     setSelected(el);
     setOpen(true);
+    
   };
 
   const userStatusClick=(el)=>{

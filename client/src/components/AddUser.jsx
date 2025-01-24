@@ -9,6 +9,7 @@ import Button from "./Button";
 import { useRegisterMutation } from "../redux/slices/api/authApiSlice";
 import { toast } from "react-toastify";
 import { setCredentials } from "../redux/slices/authSlice";
+import { useUpdateUserMutation } from "../redux/slices/api/userApiSlice";
 
 const AddUser = ({ open, setOpen, userData }) => {
   const defaultValues = userData || {};
@@ -22,7 +23,7 @@ const AddUser = ({ open, setOpen, userData }) => {
 
   const dispatch = useDispatch();
   const [addNewUser, { isLoading }] = useRegisterMutation();
-  const [updateUser, { isLoading: isUpdating }] = useRegisterMutation();
+  const [updateUser, { isLoading: isUpdating }] = useUpdateUserMutation();
 
   const handleOnSubmit = async (data) => {
     try {
@@ -32,12 +33,12 @@ const AddUser = ({ open, setOpen, userData }) => {
         toast.success(result?.message);
 
         // Update current user credentials if editing own profile
-        if (userData?._id === user?._id) {
+        if (userData?._id === user > _id) {
           dispatch(setCredentials({ ...result.user }));
         }
       } else {
         // Add new user logic
-        const result = await addNewUser({
+        await addNewUser({
           ...data,
           password: data.email, // Setting email as the default password
         }).unwrap();
