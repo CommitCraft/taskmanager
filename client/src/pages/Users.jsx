@@ -65,12 +65,12 @@ const Users = () => {
   const editClick = (el) => {
     setSelected(el);
     setOpen(true);
-    
+
   };
 
   const userStatusClick=(el)=>{
     setSelected(el);
-    setOpen(true);
+    setOpenAction(true);
   }
   const TableHeader = () => (
     <thead className="border-b border-gray-300">
