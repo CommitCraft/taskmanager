@@ -45,10 +45,10 @@ const Users = () => {
     try {
       const result=await deleteUser(selected);
       refetch();
-      toast.success(result.data.message);
+      toast.success(result?.data?.message);
       setSelected(null);
       setTimeout(()=>{
-        setOpenAction(false);
+        setOpenDialog(false);
         }, 500);
 
     } catch (error) {
