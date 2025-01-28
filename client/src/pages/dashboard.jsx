@@ -14,7 +14,7 @@ import clsx from "clsx";
 import { Chart } from "../components/Chart";
 import { BGS, PRIOTITYSTYELS, TASK_TYPE, getInitials } from "../utils";
 import UserInfo from "../components/UserInfo";
-
+import Loading from "../components/Loader";
 const TaskTable = ({ tasks }) => {
   const ICONS = {
     high: <MdKeyboardDoubleArrowUp />,
@@ -146,8 +146,20 @@ const UserTable = ({ users }) => {
   );
 };
 const Dashboard = () => {
-  const totals = summary.tasks;
+ 
+  const {data,inLoading}=useGetDashboardStatsQuery();
+  
+  if(inLoading)
+    return(
+      <div className="py-10">
+        <Loading/>
+      </div>
+    );
 
+  const totals = data.tasks;
+ 
+ 
+ 
   const stats = [
     {
       _id: "1",
