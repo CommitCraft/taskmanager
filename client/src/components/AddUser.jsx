@@ -27,13 +27,14 @@ const AddUser = ({ open, setOpen, userData }) => {
 
   const handleOnSubmit = async (data) => {
     try {
+      let message = "";
       if (userData) {
         // Update user logic
         const result = await updateUser(data).unwrap();
-        toast.success(result?.message);
-
+        message = "Profile Updated Successfully";
+  
         // Update current user credentials if editing own profile
-        if (userData?._id === user > _id) {
+        if (userData?._id === user?._id) {
           dispatch(setCredentials({ ...result.user }));
         }
       } else {
@@ -42,9 +43,12 @@ const AddUser = ({ open, setOpen, userData }) => {
           ...data,
           password: data.email, // Setting email as the default password
         }).unwrap();
-        toast.success("New User added Successfully");
+        message = "New User Added Successfully";
       }
-
+  
+      // Show only one success notification
+      toast.success(message);
+  
       // Close the modal after success
       setTimeout(() => {
         setOpen(false);
@@ -54,7 +58,7 @@ const AddUser = ({ open, setOpen, userData }) => {
       toast.error(error?.data?.message || "Something went wrong");
     }
   };
-
+  
   return (
     <>
       <ModalWrapper open={open} setOpen={setOpen}>
