@@ -5,8 +5,9 @@ import { toast } from "react-toastify";
 import ModalWrapper from "./ModalWrapper";
 import { Dialog } from "@headlessui/react";
 import Textbox from "./Textbox";
-import Loading from "./Loader";
+
 import Button from "./Button";
+import Loading from "./Loader";
 
 const ChangePassword = ({ open, setOpen }) => {
   const {
@@ -81,7 +82,7 @@ const ChangePassword = ({ open, setOpen }) => {
             {/* Loading and Buttons */}
             {isLoading ? (
               <div className="py-5 flex justify-center">
-                <Loading />
+                <Loading/>
               </div>
             ) : (
               <div className="flex gap-4">
