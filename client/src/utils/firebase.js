@@ -8,12 +8,12 @@ import { getAnalytics } from "firebase/analytics";
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_APP_FIREBASE_API_KEY,
-  authDomain: "task-manager-crm.firebaseapp.com",
-  projectId: "task-manager-crm",
-  storageBucket: "task-manager-crm.firebasestorage.app",
-  messagingSenderId: "702619885069",
-  appId: "1:702619885069:web:ed1f667fffcec0c1727f44",
-  measurementId: "G-PEGZ7VT3RF"
+  authDomain: "drive-clone-1ec4f.firebaseapp.com",
+  projectId: "drive-clone-1ec4f",
+  storageBucket: "drive-clone-1ec4f.appspot.com",
+  messagingSenderId: "103280614646",
+  appId: "1:103280614646:web:12e229a1fb140c860de0d7",
+  measurementId: "G-5CTSM7E7RP"
 };
 
 // Initialize Firebase
