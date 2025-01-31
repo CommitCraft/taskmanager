@@ -9,7 +9,7 @@ import { useLoginMutation } from "../redux/slices/api/authApiSlice";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Import the CSS for styling
 import { setCredentials } from "../redux/slices/authSlice";
-import Swal from 'sweetalert2'
+
 const Login = () => {
   const { user } = useSelector((state) => state.auth);
   const {
@@ -26,14 +26,7 @@ const Login = () => {
     try {
       const result = await login(data).unwrap();
 
-      Swal.fire({
-        title: "Login Successfully",
-        icon: "success"
-      }).then((res) => {
-        if (res.isConfirmed) {
-          dispatch(setCredentials(result));
-        }
-      })
+      dispatch(setCredentials(result));
 
       console.log(result);
     } catch (error) {
