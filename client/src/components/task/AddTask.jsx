@@ -21,6 +21,7 @@ import {
 } from "../../redux/slices/api/taskApiSlice";
 import { toast } from "sonner";
 import Loading from "../Loader"; // Import Loading Component
+import { dateFormatter } from "../../utils";
 
 const LISTS = ["TODO", "IN PROGRESS", "COMPLETED"];
 const PRIORITY = ["HIGH", "MEDIUM", "NORMAL", "LOW"];
@@ -39,15 +40,20 @@ const fileReducer = (state, action) => {
 };
 
 const AddTask = ({ open, setOpen, task }) => {
+  const defaultValues = {
+    title: task?.title || "",
+    date: dateFormatter(task?.date || new Date()),
+    team: task?.team || [],
+    stage: task?.stage?.toUpperCase() || LISTS[0],
+    priority: task?.priority?.toUpperCase() || PRIORITY[2],
+    assets: task?.assets || [],
+  };
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm({
-    defaultValues: {
-      title: task?.title || "",
-      date: task?.date || "",
-    },
+    defaultValues,
   });
 
   const [team, setTeam] = useState(task?.team || []);
@@ -147,7 +153,10 @@ const AddTask = ({ open, setOpen, task }) => {
         : await createTask(newData).unwrap();
 
       toast.success(res.message);
-      setTimeout(() => setOpen(false), 500);
+      setTimeout(() => {
+        window.location.reload();
+        setOpen(false);
+      }, 500);
     } catch (error) {
       console.error("Error submitting task:", error);
       toast.error(error?.data?.message || "Failed to submit task");

@@ -32,6 +32,7 @@ const Users = () => {
       toast.success(result.data.message);
       setSelected(null);
       setTimeout(()=>{
+        window.location.reload();
         setOpenAction(false);
         }, 500);
     
@@ -48,6 +49,7 @@ const Users = () => {
       toast.success(result?.data?.message);
       setSelected(null);
       setTimeout(()=>{
+        window.location.reload();
         setOpenDialog(false);
         }, 500);
 
