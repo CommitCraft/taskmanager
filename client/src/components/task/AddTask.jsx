@@ -8,9 +8,17 @@ import SelectList from "../SelectList";
 import { BiImages } from "react-icons/bi";
 import { AiOutlineClose } from "react-icons/ai";
 import Button from "../Button";
-import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import {
+  getStorage,
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+} from "firebase/storage";
 import { app } from "../../utils/firebase";
-import { useCreateTaskMutation, useUpdateTaskMutation } from "../../redux/slices/api/taskApiSlice";
+import {
+  useCreateTaskMutation,
+  useUpdateTaskMutation,
+} from "../../redux/slices/api/taskApiSlice";
 import { toast } from "sonner";
 import Loading from "../Loader"; // Import Loading Component
 
@@ -44,7 +52,9 @@ const AddTask = ({ open, setOpen, task }) => {
 
   const [team, setTeam] = useState(task?.team || []);
   const [stage, setStage] = useState(task?.stage?.toUpperCase() || LISTS[0]);
-  const [priority, setPriority] = useState(task?.priority?.toUpperCase() || PRIORITY[2]);
+  const [priority, setPriority] = useState(
+    task?.priority?.toUpperCase() || PRIORITY[2]
+  );
   const [assets, dispatch] = useReducer(fileReducer, []);
   const [previousAssets, setPreviousAssets] = useState(task?.assets || []);
   const [previewImages, setPreviewImages] = useState([]);
@@ -92,8 +102,12 @@ const AddTask = ({ open, setOpen, task }) => {
       uploadTask.on(
         "state_changed",
         (snapshot) => {
-          const progressValue = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          setProgress((prev) => ({ ...prev, [index]: progressValue.toFixed(2) }));
+          const progressValue =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          setProgress((prev) => ({
+            ...prev,
+            [index]: progressValue.toFixed(2),
+          }));
         },
         (error) => reject(error),
         async () => {
@@ -116,7 +130,9 @@ const AddTask = ({ open, setOpen, task }) => {
 
     setUploading(true);
     try {
-      const newFileURLs = await Promise.all(assets.map((file, index) => uploadFile(file, index)));
+      const newFileURLs = await Promise.all(
+        assets.map((file, index) => uploadFile(file, index))
+      );
 
       const newData = {
         ...formData,
@@ -144,8 +160,6 @@ const AddTask = ({ open, setOpen, task }) => {
 
   return (
     <ModalWrapper open={open} setOpen={setOpen}>
-     
-
       <form onSubmit={handleSubmit(submitHandler)}>
         <Dialog.Title className="text-base font-bold text-gray-900 mb-4">
           {task ? "UPDATE TASK" : "ADD TASK"}
@@ -161,11 +175,14 @@ const AddTask = ({ open, setOpen, task }) => {
             register={register("title", { required: "Title is required" })}
             error={errors.title ? errors.title.message : ""}
           />
-
           <UserList setTeam={setTeam} team={team} />
-
           <div className="flex gap-4">
-            <SelectList label="Task Stage" lists={LISTS} selected={stage} setSelected={setStage} />
+            <SelectList
+              label="Task Stage"
+              lists={LISTS}
+              selected={stage}
+              setSelected={setStage}
+            />
             <Textbox
               placeholder="Date"
               type="date"
@@ -175,37 +192,67 @@ const AddTask = ({ open, setOpen, task }) => {
               error={errors.date?.message}
             />
           </div>
-
           {/* Priority & Add Assets Section */}
           <div className="flex flex-col gap-4">
-            <SelectList label="Priority Level" lists={PRIORITY} selected={priority} setSelected={setPriority} />
+            <SelectList
+              label="Priority Level"
+              lists={PRIORITY}
+              selected={priority}
+              setSelected={setPriority}
+            />
 
             {/* Add Assets Button */}
             <label className="flex items-center gap-2 text-base cursor-pointer bg-gray-100 p-2 rounded-md border">
-              <input type="file" className="hidden" id="imgUpload" onChange={handleSelect} accept=".jpg, .png, .jpeg" multiple />
+              <input
+                type="file"
+                className="hidden"
+                id="imgUpload"
+                onChange={handleSelect}
+                accept=".jpg, .png, .jpeg"
+                multiple
+              />
               <BiImages className="text-gray-600 w-5 h-5" />
               <span className="text-sm text-gray-700">Add Assets</span>
             </label>
           </div>
-
           {/* Image Previews (Scrollable) */}
           {previewImages.length > 0 && (
             <div className="border p-3 rounded-lg bg-gray-50 max-h-40 overflow-y-auto flex flex-wrap gap-2">
               {previewImages.map((src, index) => (
-                <div key={index} className="relative w-24 h-24 border rounded-lg overflow-hidden shadow-md">
-                  <img src={src} alt={`Preview ${index}`} className="w-full h-full object-cover" />
-                  <button className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded-full" onClick={() => removeFile(index)}>
+                <div
+                  key={index}
+                  className="relative w-24 h-24 border rounded-lg overflow-hidden shadow-md"
+                >
+                  <img
+                    src={src}
+                    alt={`Preview ${index}`}
+                    className="w-full h-full object-cover"
+                  />
+                  <button
+                    className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded-full"
+                    onClick={() => removeFile(index)}
+                  >
                     <AiOutlineClose className="w-4 h-4" />
                   </button>
                 </div>
               ))}
             </div>
           )}
-          {(isLoading || isUpdating || uploading) && <Loading />} {/* Show loading spinner */}
+          {(isLoading || isUpdating || uploading) && <Loading />}{" "}
+          {/* Show loading spinner */}
           <div className="flex justify-end gap-4">
-          
-            <Button className="bg-green-500" label="Submit" type="submit" disabled={uploading} />
-            <Button className="bg-red-500" type="button" onClick={() => setOpen(false)} label="Cancel" />
+            <Button
+              className="bg-green-500"
+              label="Submit"
+              type="submit"
+              disabled={uploading}
+            />
+            <Button
+              className="bg-red-500"
+              type="button"
+              onClick={() => setOpen(false)}
+              label="Cancel"
+            />
           </div>
         </div>
       </form>
