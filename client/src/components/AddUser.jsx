@@ -28,11 +28,11 @@ const AddUser = ({ open, setOpen, userData }) => {
   const handleOnSubmit = async (data) => {
     try {
       let message = "";
-      if (userData) {
+      if (userData) {x
         // Update user logic
         const result = await updateUser(data).unwrap();
         message = "Profile Updated Successfully";
-  
+
         // Update current user credentials if editing own profile
         if (userData?._id === user?._id) {
           dispatch(setCredentials({ ...result.user }));
@@ -41,14 +41,14 @@ const AddUser = ({ open, setOpen, userData }) => {
         // Add new user logic
         await addNewUser({
           ...data,
-          password: data.email, // Setting email as the default password
+          // password: data.password, Setting email as the default password
         }).unwrap();
         message = "New User Added Successfully";
       }
-  
+
       // Show only one success notification
       toast.success(message);
-  
+
       // Close the modal after success
       setTimeout(() => {
         setOpen(false);
@@ -58,7 +58,7 @@ const AddUser = ({ open, setOpen, userData }) => {
       toast.error(error?.data?.message || "Something went wrong");
     }
   };
-  
+
   return (
     <>
       <ModalWrapper open={open} setOpen={setOpen}>
@@ -113,6 +113,17 @@ const AddUser = ({ open, setOpen, userData }) => {
                 required: "User role is required!",
               })}
               error={errors.role ? errors.role.message : ""}
+            />
+            <Textbox
+              placeholder="your password"
+              type="password"
+              name="password"
+              label="Password"
+              className="w-full rounded"
+              register={register("password", {
+                required: "Password is required!",
+              })}
+              error={errors.password ? errors.password.message : ""}
             />
           </div>
 
