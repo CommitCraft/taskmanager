@@ -14,17 +14,20 @@ import {
   useTrashTaskMutation,
 } from "../../redux/slices/api/taskApiSlice";
 import { toast } from "sonner";
+import Loading from "../Loader"; // Import Loader component
 
 const TaskDialog = ({ task }) => {
   const [open, setOpen] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false); // New state for API calls
 
   const navigate = useNavigate();
-  const [deleteTask] = useTrashTaskMutation();
-  const [duplicateTask] = useDuplicateTaskMutation();
+  const [deleteTask, { isLoading: isDeleting }] = useTrashTaskMutation();
+  const [duplicateTask, { isLoading: isDuplicating }] = useDuplicateTaskMutation();
 
   const duplicateHandler = async () => {
+    setIsProcessing(true); // Show loader while processing
     try {
       const res = await duplicateTask(task._id).unwrap();
       toast.success(res?.message);
@@ -33,31 +36,27 @@ const TaskDialog = ({ task }) => {
         window.location.reload();
       }, 500);
     } catch (error) {
-      console.log(error);
-      toast.error(
-        error?.data?.message ||
-          "Failed to duplicate task" ||
-          error.error.message
-      );
+      console.error(error);
+      toast.error(error?.data?.message || "Failed to duplicate task");
+    } finally {
+      setIsProcessing(false);
     }
   };
-  const deleteClicks = () => {
-    setOpenDialog(true);
-  };
+
   const deleteHandler = async () => {
+    setIsProcessing(true);
     try {
-      const res = await deleteTask({
-        id: task._id,
-        isTrashed: "trash",
-      }).unwrap();
+      const res = await deleteTask({ id: task._id, isTrashed: "trash" }).unwrap();
       toast.success(res?.message);
       setTimeout(() => {
         setOpenDialog(false);
         window.location.reload();
       }, 1000);
     } catch (err) {
-      console.log(err);
+      console.error(err);
       toast.error("Failed to delete task");
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -80,7 +79,8 @@ const TaskDialog = ({ task }) => {
     {
       label: "Duplicate",
       icon: <HiDuplicate className="mr-2 h-5 w-5" aria-hidden="true" />,
-      onClick: () => duplicateHandler(),
+      onClick: duplicateHandler,
+      disabled: isProcessing || isDuplicating, // Disable while processing
     },
   ];
 
@@ -88,7 +88,7 @@ const TaskDialog = ({ task }) => {
     <>
       <div>
         <Menu as="div" className="relative inline-block text-left">
-          <Menu.Button className="inline-flex w-full justify-center rounded-md px-4 py-2 text-sm font-medium text-gray-600 ">
+          <Menu.Button className="inline-flex w-full justify-center rounded-md px-4 py-2 text-sm font-medium text-gray-600">
             <BsThreeDots />
           </Menu.Button>
 
@@ -110,7 +110,8 @@ const TaskDialog = ({ task }) => {
                         onClick={el?.onClick}
                         className={`${
                           active ? "bg-blue-500 text-white" : "text-gray-900"
-                        } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                        } group flex w-full items-center rounded-md px-2 py-2 text-sm disabled:opacity-50`}
+                        disabled={el.disabled} // Disable buttons when processing
                       >
                         {el.icon}
                         {el.label}
@@ -124,16 +125,14 @@ const TaskDialog = ({ task }) => {
                 <Menu.Item>
                   {({ active }) => (
                     <button
-                      onClick={() => deleteClicks()}
+                      onClick={() => setOpenDialog(true)}
                       className={`${
                         active ? "bg-blue-500 text-white" : "text-red-900"
-                      } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                      } group flex w-full items-center rounded-md px-2 py-2 text-sm disabled:opacity-50`}
+                      disabled={isProcessing || isDeleting} // Disable when processing
                     >
-                      <RiDeleteBin6Line
-                        className="mr-2 h-5 w-5 text-red-400"
-                        aria-hidden="true"
-                      />
-                      Delete
+                      <RiDeleteBin6Line className="mr-2 h-5 w-5 text-red-400" aria-hidden="true" />
+                      {isDeleting ? "Deleting..." : "Delete"}
                     </button>
                   )}
                 </Menu.Item>
@@ -143,20 +142,18 @@ const TaskDialog = ({ task }) => {
         </Menu>
       </div>
 
-      <AddTask
-        open={openEdit}
-        setOpen={setOpenEdit}
-        task={task}
-        key={new Date().getTime()}
-      />
+      {/* Loader when processing an API request */}
+      {(isProcessing || isDeleting || isDuplicating) && (
+        <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-80 z-50">
+          <Loading />
+        </div>
+      )}
+
+      <AddTask open={openEdit} setOpen={setOpenEdit} task={task} key={new Date().getTime()} />
 
       <AddSubTask open={open} setOpen={setOpen} />
 
-      <ConfirmatioDialog
-        open={openDialog}
-        setOpen={setOpenDialog}
-        onClick={deleteHandler}
-      />
+      <ConfirmatioDialog open={openDialog} setOpen={setOpenDialog} onClick={deleteHandler} />
     </>
   );
 };
