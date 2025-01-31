@@ -55,7 +55,14 @@ export const taskApiSlice = apiSlice.injectEndpoints({
         credentials: "include",
       }),
     }),
-    
+    getSingleTask: builder.query({
+      query: (id) => ({
+        url: `${TASKS_URL}/${id}`,
+        method: "GET",
+        credentials: "include",
+      }),
+    }),
+
   }),
 });
 
@@ -67,4 +74,5 @@ export const {
   useDuplicateTaskMutation,
   useTrashTaskMutation,
   useCreateSubTaskMutation,
+  useGetSingleTaskQuery
 } = taskApiSlice;
