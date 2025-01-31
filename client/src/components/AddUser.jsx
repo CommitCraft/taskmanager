@@ -52,6 +52,7 @@ const AddUser = ({ open, setOpen, userData }) => {
       // Close the modal after success
       setTimeout(() => {
         setOpen(false);
+        window.location.reload();
       }, 1000);
     } catch (error) {
       console.error("Error in AddUser:", error);
