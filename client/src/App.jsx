@@ -14,6 +14,7 @@ import Trash from "./pages/Trash";
 import Users from "./pages/Users";
 import Dashboard from "./pages/dashboard";
 import { setOpenSidebar } from "./redux/slices/authSlice";
+import Register from "./pages/Register";
 
 function Layout() {
   const { user } = useSelector((state) => state.auth);
@@ -101,6 +102,7 @@ function App() {
           <Route path="/task/:id" element={<TaskDetails />} />
         </Route>
         <Route path="/log-in" element={<Login />} />
+        <Route path="*" element={<Register/>} />
       </Routes>
 
       {/* Toast notifications */}
