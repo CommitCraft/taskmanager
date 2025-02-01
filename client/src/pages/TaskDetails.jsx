@@ -277,7 +277,7 @@ const Activities = ({ activity, id, refetch }) => {
 
         <div className="flex flex-col gap-y-1 mb-8">
           <p className="font-semibold">{item?.by?.name}</p>
-          <div className="text-gray-500 space-y-2">
+          <div className="text-gray-500 flex items-center justify-between">
             <span className="capitalize">{item?.type}</span>
             <span className="text-sm">{moment(item?.date).fromNow()}</span>
           </div>

@@ -31,9 +31,10 @@ const Register = () => {
 
     try {
       const result = await registerUser({
-        name: data.name,
-        email: data.email,
-        password: data.password,
+        ...data,
+        // password: data.email,
+        role: "User",
+        title: "User",
       }).unwrap();
 
       dispatch(setCredentials(result));

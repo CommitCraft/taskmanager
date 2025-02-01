@@ -41,7 +41,7 @@ const AddUser = ({ open, setOpen, userData }) => {
         // Add new user logic
         await addNewUser({
           ...data,
-          // password: data.password, Setting email as the default password
+          //  password: data.password, //Setting email as the default password
         }).unwrap();
         message = "New User Added Successfully";
       }
