@@ -17,11 +17,14 @@ const app = express();
 
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: process.env.NODE_ENV === "production" 
+      ? "https://tm-holdler-frontend.vercel.app"
+      : "http://localhost:3000", 
     methods: ["GET", "POST", "DELETE", "PUT"],
     credentials: true
   })
 );
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
