@@ -5,9 +5,14 @@ import express from "express";
 import morgan from "morgan";
 import fs from "fs";
 import path from "path";
+import { fileURLToPath } from 'url';
 import { errorHandler, routeNotFound } from "./middlewares/errorMiddlewaves.js";
 import routes from "./routes/index.js";
 import { dbConnection } from "./utils/index.js";
+
+// Define __dirname in ES Module Scope
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Load environment variables
 dotenv.config();
@@ -57,7 +62,7 @@ if (process.env.NODE_ENV === "production") {
   app.use(morgan("dev"));
 }
 
-// ✅ **Root Route for Displaying a Message on Browser**
+// Root Route for Displaying a Message on Browser
 app.get("/", (req, res) => {
   res.send(`<h1 style="text-align: center; color: blue;">🚀 Server is Running on Port ${PORT}</h1>`);
 });
@@ -80,7 +85,7 @@ const server = app.listen(PORT, () =>
 process.on("SIGINT", async () => {
   console.log("👋 Shutting down server...");
   await dbConnection.close();
-  server.close(() => console.log("🛑 Server closed successfully."));
+  server.close(() => console.log("🚑 Server closed successfully."));
   process.exit(0);
 });
 
@@ -89,4 +94,10 @@ process.on("SIGTERM", async () => {
   await dbConnection.close();
   server.close(() => console.log("✅ Server shut down gracefully."));
   process.exit(0);
+});
+
+// Handle Unhandled Promise Rejections
+process.on("unhandledRejection", (reason, promise) => {
+  console.error("Unhandled Rejection at:", promise, "reason:", reason);
+  server.close(() => process.exit(1));
 });
