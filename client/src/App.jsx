@@ -15,6 +15,7 @@ import Users from "./pages/Users";
 import Dashboard from "./pages/dashboard";
 import { setOpenSidebar } from "./redux/slices/authSlice";
 import Register from "./pages/Register";
+import Home from "./pages/Home";
 
 function Layout() {
   const { user } = useSelector((state) => state.auth);
@@ -39,7 +40,7 @@ function Layout() {
       </div>
     </div>
   ) : (
-    <Navigate to="/log-in" state={{ from: location }} replace />
+    <Home />
   );
 }
 
@@ -68,7 +69,10 @@ const MobileSidebar = () => {
         className="md:hidden fixed inset-0 bg-black/40 z-50 flex transition-transform"
         onClick={closeSidebar}
       >
-        <div className="bg-white w-3/4 h-full shadow-lg">
+        <div
+          className="bg-white w-3/4 h-full shadow-lg"
+          onClick={(e) => e.stopPropagation()}
+        >
           <div className="w-full flex justify-end px-5 mt-5">
             <button
               onClick={closeSidebar}
@@ -87,11 +91,14 @@ const MobileSidebar = () => {
 };
 
 function App() {
+  const { user } = useSelector((state) => state.auth);
+
   return (
     <main className="w-full min-h-screen bg-[#f3f4f6]">
+      {user && <Navbar />}
       <Routes>
+      <Route index element={user ? <Navigate to="/dashboard" /> : <Home />} />
         <Route element={<Layout />}>
-          <Route index path="/" element={<Navigate to="/dashboard" />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/tasks" element={<Tasks />} />
           <Route path="/completed/:status" element={<Tasks />} />
@@ -102,7 +109,8 @@ function App() {
           <Route path="/task/:id" element={<TaskDetails />} />
         </Route>
         <Route path="/log-in" element={<Login />} />
-        <Route path="*" element={<Register/>} />
+        <Route path="/register" element={<Register />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
 
       {/* Toast notifications */}
