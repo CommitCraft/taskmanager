@@ -23,6 +23,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use(morgan("dev"));
+
+// Root Route to Display Message on Server
+app.get("/", (req, res) => {
+  res.send(`<h1 style="text-align: center; color: green;">🚀 Server is Running on Port ${PORT}</h1>`);
+});
+
 app.use("/api", routes);
 
 app.use(routeNotFound);
