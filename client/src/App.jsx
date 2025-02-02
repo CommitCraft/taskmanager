@@ -95,9 +95,8 @@ function App() {
 
   return (
     <main className="w-full min-h-screen bg-[#f3f4f6]">
-      {user && <Navbar />}
       <Routes>
-      <Route index element={user ? <Navigate to="/dashboard" /> : <Home />} />
+      <Route index element={user ? <Navigate to="/dashboard" /> : <Home />}/>
         <Route element={<Layout />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/tasks" element={<Tasks />} />

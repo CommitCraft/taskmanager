@@ -26,7 +26,7 @@ const UserAvatar = () => {
       await logoutUser().unwrap();
       dispatch(logout());
       toast.success("Successfully logged out"); // Success toast
-      navigate("/log-in");
+      navigate("/");
     } catch (error) {
       console.error("Logout error:", error); // Log error for debugging
       toast.error("Something went wrong"); // Error toast
