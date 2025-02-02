@@ -24,19 +24,20 @@ const allowedOrigins = [
   "http://localhost:3001"
 ];
 
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    methods: ["GET", "POST", "DELETE", "PUT"],
-    credentials: true,
-  })
-);
+app.use();
+// app.use(
+//   cors({
+//     origin: function (origin, callback) {
+//       if (!origin || allowedOrigins.includes(origin)) {
+//         callback(null, true);
+//       } else {
+//         callback(new Error("Not allowed by CORS"));
+//       }
+//     },
+//     methods: ["GET", "POST", "DELETE", "PUT"],
+//     credentials: true,
+//   })
+// );
 
 // Middleware to parse JSON and URL-encoded data
 app.use(express.json());
