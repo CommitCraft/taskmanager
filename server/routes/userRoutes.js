@@ -22,9 +22,9 @@ router.post("/logout", logoutUser);
 router.get("/get-team", protectRoute, isAdminRoute, getTeamList);
 router.get("/notifications",  getNotificationsList);
 
-router.put("/profile", protectRoute, updateUserProfile);
-router.put("/read-noti", protectRoute, markNotificationRead);
-router.put("/change-password", protectRoute, changeUserPassword);
+router.put("/profile",  updateUserProfile);
+router.put("/read-noti",  markNotificationRead);
+router.put("/change-password",  changeUserPassword);
 
 // //   FOR ADMIN ONLY - ADMIN ROUTES
 router
