@@ -19,7 +19,7 @@ router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.post("/logout", logoutUser);
 
-router.get("/get-team", protectRoute, isAdminRoute, getTeamList);
+router.get("/get-team",  isAdminRoute, getTeamList);
 router.get("/notifications",  getNotificationsList);
 
 router.put("/profile",  updateUserProfile);
@@ -29,7 +29,7 @@ router.put("/change-password",  changeUserPassword);
 // //   FOR ADMIN ONLY - ADMIN ROUTES
 router
   .route("/:id")
-  .put(protectRoute, isAdminRoute, activateUserProfile)
-  .delete(protectRoute, isAdminRoute, deleteUserProfile);
+  .put( isAdminRoute, activateUserProfile)
+  .delete( isAdminRoute, deleteUserProfile);
 
 export default router;
