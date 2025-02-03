@@ -3,23 +3,42 @@ import User from "../models/user.js";
 
 const protectRoute = async (req, res, next) => {
   try {
-    let token = req.cookies?.token;
+    const token = req.cookies?.token;
 
-    if (token) {
+    if (token === undefined || token === null) {
+      return res
+        .status(401)
+        .json({ status: false, message: "Not authorized. Try login again." });
+    }
+
+    try {
       const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
 
-      const resp = await User.findById(decodedToken.userId).select(
+      const user = await User.findById(decodedToken.userId).select(
         "isAdmin email"
       );
 
+      if (user === null) {
+        return res
+          .status(401)
+          .json({ status: false, message: "Not authorized. Try login again." });
+      }
+
+      if (!user) {
+        return res
+          .status(401)
+          .json({ status: false, message: "Not authorized. Try login again." });
+      }
+
       req.user = {
-        email: resp.email,
-        isAdmin: resp.isAdmin,
+        email: user.email,
+        isAdmin: user.isAdmin,
         userId: decodedToken.userId,
       };
 
       next();
-    } else {
+    } catch (error) {
+      console.error(error);
       return res
         .status(401)
         .json({ status: false, message: "Not authorized. Try login again." });
@@ -33,12 +52,27 @@ const protectRoute = async (req, res, next) => {
 };
 
 const isAdminRoute = (req, res, next) => {
-  if (req.user && req.user.isAdmin) {
-    next();
-  } else {
-    return res.status(401).json({
+  try {
+    if (req.user && req.user.isAdmin !== undefined) {
+      if (req.user.isAdmin) {
+        return next();
+      } else {
+        return res.status(403).json({
+          status: false,
+          message: "Not authorized as admin. Try login as admin.",
+        });
+      }
+    } else {
+      return res.status(401).json({
+        status: false,
+        message: "User information not available. Try login again.",
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
       status: false,
-      message: "Not authorized as admin. Try login as admin.",
+      message: "An unexpected error occurred. Please try again later.",
     });
   }
 };
