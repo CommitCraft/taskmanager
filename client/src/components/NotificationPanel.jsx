@@ -32,11 +32,14 @@ const NotificationPanel = () => {
   const [markAsRead] = useMarkNotificationReadMutation();
   const [loading, setLoading] = useState(false);
 
+  console.log("Notifications Data:", notifications); // Debugging API Response
+
+  // Mark notification as read (single or all)
   const readHandler = useCallback(
     async (type, id) => {
       try {
         await markAsRead({ type, id }).unwrap();
-        refetch();
+        refetch(); // Refetch notifications after marking as read
       } catch (error) {
         console.error("Failed to mark notification as read:", error);
         alert(
@@ -47,15 +50,17 @@ const NotificationPanel = () => {
     [markAsRead, refetch]
   );
 
+  // Handle view notification
   const viewHandler = useCallback(
     (el) => {
       setSelected(el);
-      readHandler("one", el._id);
+      readHandler("one", el._id); // Mark selected notification as read
       setOpen(true);
     },
     [readHandler]
   );
 
+  // Mark all notifications as read
   const markAllReadHandler = async () => {
     setLoading(true);
     await readHandler("all", "");
