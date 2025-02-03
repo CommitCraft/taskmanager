@@ -5,37 +5,56 @@ import { BiSolidMessageRounded } from "react-icons/bi";
 import { HiBellAlert } from "react-icons/hi2";
 import { IoIosNotificationsOutline } from "react-icons/io";
 import { Link } from "react-router-dom";
-import { useGetNotificationQuery, useMarkNotificationReadMutation } from "../redux/slices/api/userApiSlice";
+import {
+  useGetNotificationQuery,
+  useMarkNotificationReadMutation,
+} from "../redux/slices/api/userApiSlice";
 import ViewNotification from "./ViewNotification";
 
 const ICONS = {
-  alert: <HiBellAlert className="h-5 w-5 text-gray-600 group-hover:text-indigo-600" />,
-  message: <BiSolidMessageRounded className="h-5 w-5 text-gray-600 group-hover:text-indigo-600" />,
+  alert: (
+    <HiBellAlert className="h-5 w-5 text-gray-600 group-hover:text-indigo-600" />
+  ),
+  message: (
+    <BiSolidMessageRounded className="h-5 w-5 text-gray-600 group-hover:text-indigo-600" />
+  ),
 };
 
 const NotificationPanel = () => {
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState(null);
-  const { data: notifications, error, isLoading, refetch } = useGetNotificationQuery();
+  const {
+    data: notifications,
+    error,
+    isLoading,
+    refetch,
+  } = useGetNotificationQuery();
   const [markAsRead] = useMarkNotificationReadMutation();
   const [loading, setLoading] = useState(false);
 
-  console.log("Notifications Data:", notifications); // Debugging API Response
+  const readHandler = useCallback(
+    async (type, id) => {
+      try {
+        await markAsRead({ type, id }).unwrap();
+        refetch();
+      } catch (error) {
+        console.error("Failed to mark notification as read:", error);
+        alert(
+          "There was an issue marking the notification as read. Please try again."
+        );
+      }
+    },
+    [markAsRead, refetch]
+  );
 
-  const readHandler = useCallback(async (type, id) => {
-    try {
-      await markAsRead({ type, id }).unwrap();
-      refetch();
-    } catch (error) {
-      console.error("Failed to mark notification as read:", error);
-    }
-  }, [markAsRead, refetch]);
-
-  const viewHandler = useCallback((el) => {
-    setSelected(el);
-    readHandler("one", el._id);
-    setOpen(true);
-  }, [readHandler]);
+  const viewHandler = useCallback(
+    (el) => {
+      setSelected(el);
+      readHandler("one", el._id);
+      setOpen(true);
+    },
+    [readHandler]
+  );
 
   const markAllReadHandler = async () => {
     setLoading(true);
@@ -80,8 +99,16 @@ const NotificationPanel = () => {
             {({ close }) => (
               <div className="w-screen max-w-md flex-auto overflow-hidden rounded-3xl bg-white text-sm leading-6 shadow-lg ring-1 ring-gray-900/5">
                 <div className="p-4">
-                  {isLoading && <p className="text-center text-gray-500">Loading notifications...</p>}
-                  {error && <p className="text-center text-red-500">Failed to load notifications.</p>}
+                  {isLoading && (
+                    <p className="text-center text-gray-500">
+                      Loading notifications...
+                    </p>
+                  )}
+                  {error && (
+                    <p className="text-center text-red-500">
+                      Failed to load notifications.
+                    </p>
+                  )}
 
                   {notifications?.length > 0 ? (
                     notifications.slice(0, 5).map((item, index) => (
@@ -93,19 +120,26 @@ const NotificationPanel = () => {
                           {ICONS[item.notiType]}
                         </div>
 
-                        <div className="cursor-pointer" onClick={() => viewHandler(item)}>
+                        <div
+                          className="cursor-pointer"
+                          onClick={() => viewHandler(item)}
+                        >
                           <div className="flex items-center gap-3 font-semibold text-gray-900 capitalize">
                             <p>{item.notiType}</p>
                             <span className="text-xs font-normal lowercase">
                               {moment(item.createdAt).fromNow()}
                             </span>
                           </div>
-                          <p className="line-clamp-1 mt-1 text-gray-600">{item.text}</p>
+                          <p className="line-clamp-1 mt-1 text-gray-600">
+                            {item.text}
+                          </p>
                         </div>
                       </div>
                     ))
                   ) : (
-                    <p className="text-center text-gray-500">No new notifications</p>
+                    <p className="text-center text-gray-500">
+                      No new notifications
+                    </p>
                   )}
                 </div>
 
@@ -113,7 +147,9 @@ const NotificationPanel = () => {
                   {callsToAction.map((item) => (
                     <Link
                       key={item.name}
-                      onClick={item?.onClick ? () => item.onClick() : () => close()}
+                      onClick={
+                        item?.onClick ? () => item.onClick() : () => close()
+                      }
                       className="flex items-center justify-center gap-x-2.5 p-3 font-semibold text-blue-600 hover:bg-gray-100"
                     >
                       {item.name}
