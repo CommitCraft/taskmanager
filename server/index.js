@@ -17,11 +17,11 @@ const app = express();
 
 app.use(
   cors({
-    origin: process.env.NODE_ENV === "production" 
-      ? "https://tm-holdler-frontend.vercel.app"
-      : "http://localhost:3000", 
+    origin: process.env.NODE_ENV === "production"
+      ? process.env.PROD_FRONTEND_URL  // Use production frontend URL
+      : process.env.CORS_ORIGIN,       // Use local development frontend URL
     methods: ["GET", "POST", "DELETE", "PUT"],
-    credentials: true
+    credentials: true,  // Allow credentials like cookies or authorization headers
   })
 );
 
