@@ -3,7 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
 import morgan from "morgan";
-import { errorHandler, routeNotFound } from "./middlewares/errorMiddlewaves.js";
+import { errorHandler, routeNotFound } from "./middlewares/errorMiddlewares.js";
 import routes from "./routes/index.js";
 import { dbConnection } from "./utils/index.js";
 

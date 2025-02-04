@@ -1,5 +1,5 @@
 import express from "express";
-import { isAdminRoute, protectRoute } from "../middlewares/authMiddlewave.js";
+import { isAdminRoute, protectRoute } from "../middlewares/authMiddlewares.js";
 import {
   activateUserProfile,
   changeUserPassword,
