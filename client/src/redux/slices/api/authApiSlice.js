@@ -24,11 +24,9 @@ export const authApiSlice=apiSlice.injectEndpoints({
             query: (data)=>({
                 url:`${AUTH_URL}/logout`,
                 method: "POST",
-              
                 credentials:"include",
             }),
         }),
-        
         
     })
        
