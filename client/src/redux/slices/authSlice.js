@@ -1,11 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { user } from "../../assets/data";
+import Cookies from "js-cookie";
 
 const initialState = {
-  user: localStorage.getItem("userInfo")
-    ? JSON.parse(localStorage.getItem("userInfo"))
-    : null,
-
+  user: (() => {
+    try {
+      const userData = Cookies.get("token");
+      return userData ? JSON.parse(userData) : null;
+    } catch (error) {
+      console.error("Error parsing userInfo from cookies:", error);
+      return null;
+    }
+  })(),
   isSidebarOpen: false,
 };
 
@@ -15,11 +20,12 @@ const authSlice = createSlice({
   reducers: {
     setCredentials: (state, action) => {
       state.user = action.payload;
-      localStorage.setItem("userInfo", JSON.stringify(action.payload));
+      Cookies.set("token", JSON.stringify(action.payload), { expires: 7, secure: true, sameSite: "Strict" }); 
+      // `expires: 7` means the cookie will last for 7 days
     },
-    logout: (state, action) => {
+    logout: (state) => {
       state.user = null;
-      localStorage.removeItem("userInfo");
+      Cookies.remove("token");
     },
     setOpenSidebar: (state, action) => {
       state.isSidebarOpen = action.payload;
@@ -28,5 +34,4 @@ const authSlice = createSlice({
 });
 
 export const { setCredentials, logout, setOpenSidebar } = authSlice.actions;
-
 export default authSlice.reducer;
