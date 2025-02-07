@@ -17,25 +17,35 @@ const app = express();
 
 app.use(
   cors({
-    origin: process.env.NODE_ENV === "production"
-      ? process.env.PROD_FRONTEND_URL  // Use production frontend URL
-      : process.env.CORS_ORIGIN,       // Use local development frontend URL
-    methods: ["GET", "POST", "DELETE", "PUT"],
-    credentials: true,  // Allow credentials like cookies or authorization headers
+    origin: ["https://tm-holdler-frontend.vercel.app"],
+    credentials:true,
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
-
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(cookieParser());
 
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "https://taskmanager-ochre-two.vercel.app");
+  res.header("Access-Control-Allow-Credentials", "true");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+  next();
+});
+
 app.use(morgan("dev"));
 
 // Root Route to Display Message on Server
 app.get("/", (req, res) => {
-  res.send(`<h1 style="text-align: center; color: green;">🚀 Server is Running on Port ${PORT}</h1>`);
+  res.send(
+    `<h1 style="text-align: center; color: green;">🚀 Server is Running on Port ${PORT}</h1>`
+  );
 });
 
 app.use("/api", routes);

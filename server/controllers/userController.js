@@ -83,7 +83,7 @@ export const loginUser = async (req, res) => {
 export const logoutUser = async (req, res) => {
   try {
     res.cookie("token", "", {
-      httpOnly: true,
+      htttpOnly: true,
       expires: new Date(0),
     });
 
@@ -200,7 +200,7 @@ export const changeUserPassword = async (req, res) => {
 
       res.status(201).json({
         status: true,
-        message: `Password changed successfully.`,
+        message: `Password chnaged successfully.`,
       });
     } else {
       res.status(404).json({ status: false, message: "User not found" });
